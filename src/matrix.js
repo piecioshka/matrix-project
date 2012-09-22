@@ -69,21 +69,30 @@ Matrix = (function () {
         return character;
     }
 
-    function put_char_on_view(character, callback) {
+    function put_char_on_view(number, callback) {
         // optymalization
         if (area_instance === null) {
             area_instance = document.querySelector(settings.place_id);
         }
+
+        var character = create_single_char_for_view(number);
         area_instance.appendChild(character);
-        callback(character);
+        callback(character, number);
     }
 
-    function animate_character(character) {
+    function animate_character(character, number) {
         var top = 0;
         var interval = setInterval(function () {
             if (top >= AREA_SIZE_HEIGHT) {
+                // delete from DOM
+                character.parentNode.removeChild(character);
+                // delete from IE
                 character = null;
+
                 clearInterval(interval);
+
+                // create new instance
+                put_char_on_view(number, animate_character);
                 return false;
             }
 
@@ -98,7 +107,7 @@ Matrix = (function () {
         Benchmark.start("create characters");
 
         for (i = 0; i < AREA_SIZE_WIDTH / CHAR_SIZE_WIDTH; i++) {
-            put_char_on_view(create_single_char_for_view(i), animate_character);
+            put_char_on_view(i, animate_character);
         }
 
         Benchmark.stop("create characters");
