@@ -54,12 +54,14 @@ Matrix = (function () {
 
     function create_single_char_for_view(number) {
         var character = document.createElement("span");
-        character.innerText = chars[get_random_char()];
+        // for Firefox must use innerHTML
+        character.innerHTML = chars[get_random_char()];
         character.className = "character";
 
         var style = character.style;
-        style.left = number * CHAR_SIZE_WIDTH;
-        style.top = 0;
+        // for Firefox must add "px" to definite top and left dimensions
+        style.left = number * CHAR_SIZE_WIDTH + "px";
+        style.top = "0px";
         if (number % 2) {
             style.backgroundColor = "red";
         }
