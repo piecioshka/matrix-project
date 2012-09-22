@@ -7,15 +7,33 @@ Matrix = (function () {
         AREA_SIZE_HEIGHT = 0,
 
         // set character dimensions
-        CHAR_SIZE_WIDTH = 10,
-        CHAR_SIZE_HEIGHT = 10,
+        CHAR_SIZE_WIDTH = 20,
+        CHAR_SIZE_HEIGHT = 20,
 
         area_id = "#matrix",
 
         area_instance = document.querySelector(area_id),
+        
+        chars = [];
 
-        chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-            "o", "q", "p", "r", "s", "t", "u", "w", "x", "y", "z"];
+    function _add_normal_chars() {
+        chars.push("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+            "o", "q", "p", "r", "s", "t", "u", "w", "x", "y", "z");
+    }
+
+    function _add_numbers() {
+        chars.push(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    }
+
+    function _add_china_chars() {
+        for (var x = 0; x < 255; ++x) {
+            chars.push("&#" + x + ";");
+        }
+    }
+
+    _add_normal_chars();
+    _add_numbers();
+    _add_china_chars();
 
     // get Window dimensions
     AREA_SIZE_WIDTH = window.innerWidth;

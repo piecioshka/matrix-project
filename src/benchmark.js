@@ -15,7 +15,7 @@ Benchmark = (function () {
 
         stop: function (name_of_test) {
             data[name_of_test] = (new Date()).getTime() - data[name_of_test];
-            print_test_result(name_of_test);
+            // print_test_result(name_of_test);
         }
     };
 }());
