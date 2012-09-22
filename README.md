@@ -1,2 +1,2 @@
-matrix
+matrix - animation of flying letters
 ======
