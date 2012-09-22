@@ -1,0 +1,33 @@
+html.matrix { background: #000; }
+
+#area {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.icon { display: block; position: absolute; left: 0; top: 0; }
+.matrix .icon { width: 20px; height: 20px }
+
+.matrix .character {
+    font-size: 20px;
+    font-family: Tahoma, sans-serif;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    color: #028700;
+    text-align: center;
+    float: left;
+    text-shadow: 0 0 10px #028700;
+    -webkit-text-shadow: 0 0 10px #028700;
+    -moz-text-shadow: 0 0 10px #028700;
+    -o-text-shadow: 0 0 10px #028700;
+    -ms-text-shadow: 0 0 10px #028700;
+}
+
+.matrix .chain {
+    position: absolute;
+    left: 0;
+    top: 0;
+}

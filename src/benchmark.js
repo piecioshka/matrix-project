@@ -1,6 +1,5 @@
-var Benchmark;
-Benchmark = (function () {
-    "use strict"
+(function (global) {
+    "use strict";
 
     var data = {};
 
@@ -8,7 +7,7 @@ Benchmark = (function () {
         console.log(data[name_of_test] + "ms - " + name_of_test);
     }
 
-    return {
+    var Benchmark = global.Benchmark = {
         start: function (name_of_test) {
             data[name_of_test] = (new Date()).getTime();
         },
@@ -18,4 +17,5 @@ Benchmark = (function () {
             // print_test_result(name_of_test);
         }
     };
-}());
+
+}(this));

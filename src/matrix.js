@@ -2,82 +2,35 @@ var Matrix;
 Matrix = (function () {
     "use strict";
 
-    /// replace under
-    var AREA_SIZE_WIDTH = 0,
-        AREA_SIZE_HEIGHT = 0,
+    var config = {
+        ZONE_WIDTH: null,
+        ZONE_HEIGHT: null,
+        ANIMATE_OBJECT_WIDTH: null,
+        ANIMATE_OBJECT_HEIGHT: null,
+        ZONE_ID: null
+    };
 
-        // set character dimensions
-        CHAR_SIZE_WIDTH = 20,
-        CHAR_SIZE_HEIGHT = 20,
+    var animationIntervals = [];
+    var area_instance = null;
+    // var flying_elements = MatrixData.getElements();
 
-        area_id = "#matrix",
+    function setup_area(html_element) {
+        var style = html_element.style;
 
-        area_instance = document.querySelector(area_id),
-        
-        chars = [];
-
-    function _add_normal_chars() {
-        chars.push("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-            "o", "q", "p", "r", "s", "t", "u", "w", "x", "y", "z");
-    }
-
-    function _add_numbers() {
-        chars.push(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-    }
-
-    function _add_china_chars() {
-        for (var x = 0; x < 255; ++x) {
-            chars.push("&#" + x + ";");
-        }
-    }
-
-    _add_normal_chars();
-    _add_numbers();
-    _add_china_chars();
-
-    // get Window dimensions
-    AREA_SIZE_WIDTH = window.innerWidth;
-    AREA_SIZE_HEIGHT = window.innerHeight;
-
-    var area_style = area_instance.style;
-
-    // define dimensions
-    area_style.width = AREA_SIZE_WIDTH + "px";
-    area_style.height = AREA_SIZE_HEIGHT + "px";
-
-    // initialize pattern
-    (function () {
-        window.addEventListener("load", init_matrix);
-    }());
-
-    function init_matrix() {
-        Matrix.init();
-    }
-
-    function get_random_char() {
-        return parseInt((Math.random() * chars.length - 1).toFixed(0), 10);
-    }
-
-    function get_random_time() {
-        return (Math.random() * 70 + 10).toFixed(0);
+        // define dimensions
+        style.width = config.ZONE_WIDTH + "px";
+        style.height = config.ZONE_HEIGHT + "px";
     }
 
     function create_single_char_for_view() {
-        var character = document.createElement("span");
-
-        var random = get_random_char();
-        if (random < 0) {
-            random = 1;
-        }
-
+        var anim_obj = document.createElement("span");
         // for Firefox must use innerHTML
-        character.innerHTML = chars[random];
-        character.className = "character";
-
-        return character;
+        anim_obj.innerHTML = MatrixData.getRandom();
+        anim_obj.className = "character";
+        return anim_obj;
     }
 
-    function get_chain_for_view(number) {
+    function create_chain_for_view(number) {
         var chain = document.createElement("div"),
             i,
             number_of_letters = 6;
@@ -86,11 +39,11 @@ Matrix = (function () {
 
         var style = chain.style;
         // for Firefox must add "px" to definite top and left dimensions
-        style.left = number * CHAR_SIZE_WIDTH + "px";
-        style.top = (-1) * number * CHAR_SIZE_HEIGHT + "px";
+        style.left = number * config.ANIMATE_OBJECT_WIDTH + "px";
+        style.top = (-1) * number_of_letters * config.ANIMATE_OBJECT_HEIGHT + "px";
 
-        style.height = number_of_letters * CHAR_SIZE_HEIGHT + "px";
-        style.width = CHAR_SIZE_HEIGHT + "px";
+        style.height = number_of_letters * config.ANIMATE_OBJECT_HEIGHT + "px";
+        style.width = config.ANIMATE_OBJECT_HEIGHT + "px";
 
         for (i = 0; i < number_of_letters; ++i) {
             chain.appendChild(create_single_char_for_view(number));
@@ -99,52 +52,72 @@ Matrix = (function () {
         return chain;
     }
 
-    function put_object_to_view(number, callback) {
-        var character = get_chain_for_view(number);
-        area_instance.appendChild(character);
-        callback(character, number);
+    function put_object_to_view(number) {
+        var anim_obj = create_chain_for_view(number);
+        area_instance.appendChild(anim_obj);
+        animate_chain(anim_obj, number);
     }
 
-    function animate_chain(character, number) {
-        var top = parseInt(character.style.top, 10);
-        var interval = setInterval(function () {
-            if (top >= AREA_SIZE_HEIGHT) {
+    function animate_chain(anim_obj, number) {
+        var top = parseInt(anim_obj.style.top, 10);
+         var interval = setInterval(function () {
+            if (top >= config.ZONE_HEIGHT) {
                 // delete from DOM
-                character.parentNode.removeChild(character);
+                anim_obj.parentNode.removeChild(anim_obj);
                 // delete from IE
-                character = null;
+                anim_obj = null;
 
                 clearInterval(interval);
 
                 // create new instance
-                put_object_to_view(number, animate_chain);
-                return false;
+                put_object_to_view(number);
+                return;
             }
 
-            character.style.top = top + "px";
+            anim_obj.style.top = top + "px";
             top += 5;
-        }, get_random_time());
+        }, +(Math.random() * 70 + 10).toFixed(0));
+
+        animationIntervals.push(interval);
     }
 
-    function run_matrix() {
-        var i, max = (AREA_SIZE_WIDTH / CHAR_SIZE_WIDTH).toFixed(0);
-
-        Benchmark.start("create " + max + " characters");
+    function setup() {
+        var i, max = (config.ZONE_WIDTH / config.ANIMATE_OBJECT_WIDTH).toFixed(0);
 
         for (i = 0; i < max; i++) {
-            put_object_to_view(i, animate_chain);
+            put_object_to_view(i);
         }
+        setup_area(area_instance);
+    }
 
-        Benchmark.stop("create " + max + " characters");
+    function clearIntervals() {
+        var i;
+        var count = animationIntervals.length;
+
+        for (i = 0; i < count; i++) {
+            clearInterval(animationIntervals[i]);
+        }
     }
 
     return {
-        init: function () {
-            Benchmark.start("start of application");
+        init: function (settings) {
+            // ustawienie konfiguracji
+            config = MatrixManager.UTIL.mixin(config, settings);
+            // złapanie kontenera do animacji
+            area_instance = document.querySelector(config.ZONE_ID);
+            // dodanie klasy CSS do zaladowania wygladu
+            MatrixManager.DOM.addClass("matrix");
+            // uruchomienie animacji
+            setup();
+        },
+        clear: function () {
+            if (area_instance) {
+                area_instance.innerHTML = "";
+            }
 
-            run_matrix();
-
-            Benchmark.stop("start of application");
+            clearIntervals();
+            MatrixManager.DOM.removeClass("matrix");
         }
     };
 }());
+
