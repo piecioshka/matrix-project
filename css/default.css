@@ -3,6 +3,7 @@
     height: 100%;
     position: relative;
     overflow: hidden;
+    background: #000;
 }
 .character {
     font-size: 12px;
@@ -10,10 +11,10 @@
     width: 10px;
     height: 10px;
     line-height: 10px;
-    background: #000;
-    color: #fff;
+    color: #028700;
     text-align: center;
     float: left;
+    text-shadow: 0 0 10px #028700;
 }
 
 .chain {

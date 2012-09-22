@@ -37,22 +37,24 @@ Matrix = (function () {
     }
 
     function get_random_char() {
-        return (Math.random() * chars.length).toFixed(0);
+        return parseInt((Math.random() * chars.length - 1).toFixed(0), 10);
     }
 
     function get_random_time() {
-        return (Math.random() * 200 + 50).toFixed(0);
+        return (Math.random() * 100 + 20).toFixed(0);
     }
 
     function create_single_char_for_view(number) {
         var character = document.createElement("span");
-        // for Firefox must use innerHTML
-        character.innerHTML = chars[get_random_char()];
-        character.className = "character";
 
-        if (number % 2) {
-            character.style.backgroundColor = "red";
+        var random = get_random_char();
+        if (random < 0) {
+            random = 1;
         }
+
+        // for Firefox must use innerHTML
+        character.innerHTML = chars[random];
+        character.className = "character";
 
         return character;
     }
@@ -67,7 +69,7 @@ Matrix = (function () {
         var style = chain.style;
         // for Firefox must add "px" to definite top and left dimensions
         style.left = number * CHAR_SIZE_WIDTH + "px";
-        style.top = "0px";
+        style.top = (-1) * number * CHAR_SIZE_HEIGHT + "px";
 
         style.height = number_of_letters * CHAR_SIZE_HEIGHT + "px";
         style.width = CHAR_SIZE_HEIGHT + "px";
@@ -79,14 +81,14 @@ Matrix = (function () {
         return chain;
     }
 
-    function put_char_on_view(number, callback) {
+    function put_object_to_view(number, callback) {
         var character = get_chain_for_view(number);
         area_instance.appendChild(character);
         callback(character, number);
     }
 
     function animate_chain(character, number) {
-        var top = 0;
+        var top = parseInt(character.style.top, 10);
         var interval = setInterval(function () {
             if (top >= AREA_SIZE_HEIGHT) {
                 // delete from DOM
@@ -97,7 +99,7 @@ Matrix = (function () {
                 clearInterval(interval);
 
                 // create new instance
-                put_char_on_view(number, animate_chain);
+                put_object_to_view(number, animate_chain);
                 return false;
             }
 
@@ -112,7 +114,7 @@ Matrix = (function () {
         Benchmark.start("create " + max + " characters");
 
         for (i = 0; i < max; i++) {
-            put_char_on_view(i, animate_chain);
+            put_object_to_view(i, animate_chain);
         }
 
         Benchmark.stop("create " + max + " characters");
