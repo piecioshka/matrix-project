@@ -59,10 +59,10 @@ Matrix = (function () {
     }
 
     function get_random_time() {
-        return (Math.random() * 100 + 20).toFixed(0);
+        return (Math.random() * 70 + 10).toFixed(0);
     }
 
-    function create_single_char_for_view(number) {
+    function create_single_char_for_view() {
         var character = document.createElement("span");
 
         var random = get_random_char();
