@@ -2,20 +2,31 @@ var Matrix;
 Matrix = (function () {
     "use strict";
 
-    var AREA_SIZE_WIDTH = 300,
-        AREA_SIZE_HEIGHT = 300,
+    var AREA_SIZE_WIDTH = 0,
+        AREA_SIZE_HEIGHT = 0,
 
         CHAR_SIZE_WIDTH = 10,
         CHAR_SIZE_HEIGHT = 10,
 
-        settings = {
-            place_id: null
-        },
+        area_id = "#matrix",
 
         area_instance = null,
 
         chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
             "o", "q", "p", "r", "s", "t", "u", "w", "x", "y", "z"];
+
+
+    // optymalization
+    area_instance = document.querySelector(area_id);
+
+    AREA_SIZE_WIDTH = window.innerWidth - 10;
+    AREA_SIZE_HEIGHT = window.innerHeight - 10;
+
+    area_instance.style.width = AREA_SIZE_WIDTH + "px";
+    area_instance.style.height = AREA_SIZE_HEIGHT + "px";
+
+    console.log("AREA_SIZE_WIDTH", AREA_SIZE_WIDTH);
+    console.log("AREA_SIZE_HEIGHT", AREA_SIZE_HEIGHT);
 
     // initialize pattern
     (function () {
@@ -23,9 +34,7 @@ Matrix = (function () {
     }());
 
     function init_matrix() {
-        Matrix.init({
-            place_id: "#matrix"
-        });
+        Matrix.init();
     }
 
     function get_random_char() {
@@ -70,11 +79,6 @@ Matrix = (function () {
     }
 
     function put_char_on_view(number, callback) {
-        // optymalization
-        if (area_instance === null) {
-            area_instance = document.querySelector(settings.place_id);
-        }
-
         var character = create_single_char_for_view(number);
         area_instance.appendChild(character);
         callback(character, number);
@@ -114,9 +118,7 @@ Matrix = (function () {
     }
 
     return {
-        init: function (config) {
-            settings = config;
-
+        init: function () {
             Benchmark.start("start of application");
 
             run_matrix();
