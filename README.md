@@ -6,4 +6,6 @@ Each charaters chain is <div> tag with character (<span>).
 
 ### License
 
-The MIT License (MIT) - Copyright (c) 2013 Piotr Kowalski
+[The MIT License][0]
+
+[0]: http://piecioshka.mit-license.org
