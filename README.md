@@ -1,11 +1,11 @@
 # matrix
 
-> Letters animation as Matrix Theme.
+> Letters animation as Matrix theme.
 
-### How it works?
+## How it works?
 
 Each characters chain is `<div>` tag with character (`<span>`).
 
-### License
+## License
 
-[The MIT License](http://piecioshka.mit-license.org)
+[The MIT License](http://piecioshka.mit-license.org) @ 2012
