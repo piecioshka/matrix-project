@@ -1,8 +1,7 @@
 'use strict';
 
 var MatrixData = require('./data');
-var Utils = require('../common/utils');
-var DOM = require('../common/dom');
+var Utils = require('./utils');
 
 var config = {
     ZONE_WIDTH: null,
@@ -13,10 +12,10 @@ var config = {
 };
 
 var animationIntervals = [];
-var area_instance = null;
+var $dom = null;
 // var flying_elements = MatrixData.getElements();
 
-function setup_area(html_element) {
+function setupArea(html_element) {
     var style = html_element.style;
 
     // define dimensions
@@ -24,22 +23,22 @@ function setup_area(html_element) {
     style.height = config.ZONE_HEIGHT + 'px';
 }
 
-function create_single_char_for_view() {
-    var anim_obj = document.createElement('span');
+function createSingleCharForView() {
+    var $span = document.createElement('span');
     // for Firefox must use innerHTML
-    anim_obj.innerHTML = MatrixData.getRandom();
-    anim_obj.className = 'character';
-    return anim_obj;
+    $span.innerHTML = MatrixData.getRandom();
+    $span.className = 'character';
+    return $span;
 }
 
-function create_chain_for_view(number) {
-    var chain = document.createElement('div'),
-        i,
-        number_of_letters = 6;
+function createChainForView(number) {
+    var i;
+    var $chain = document.createElement('div');
+    var number_of_letters = 6;
 
-    chain.className = 'chain';
+    $chain.className = 'chain';
 
-    var style = chain.style;
+    var style = $chain.style;
     // for Firefox must add 'px' to definite top and left dimensions
     style.left = number * config.ANIMATE_OBJECT_WIDTH + 'px';
     style.top = (-1) * number_of_letters * config.ANIMATE_OBJECT_HEIGHT + 'px';
@@ -48,49 +47,51 @@ function create_chain_for_view(number) {
     style.width = config.ANIMATE_OBJECT_HEIGHT + 'px';
 
     for (i = 0; i < number_of_letters; ++i) {
-        chain.appendChild(create_single_char_for_view(number));
+        $chain.appendChild(createSingleCharForView(number));
     }
 
-    return chain;
+    return $chain;
 }
 
-function put_object_to_view(number) {
-    var anim_obj = create_chain_for_view(number);
-    area_instance.appendChild(anim_obj);
-    animate_chain(anim_obj, number);
+function putObjectToView(number) {
+    var $chain = createChainForView(number);
+    $dom.appendChild($chain);
+    animateChain($chain, number);
 }
 
-function animate_chain(anim_obj, number) {
-    var top = parseInt(anim_obj.style.top, 10);
+function animateChain($chain, number) {
+    var top = parseInt($chain.style.top, 10);
+    var time = +(Math.random() * 70 + 10).toFixed(0);
     var interval = setInterval(function () {
         if (top >= config.ZONE_HEIGHT) {
             // delete from DOM
-            anim_obj.parentNode.removeChild(anim_obj);
+            $chain.parentNode.removeChild($chain);
 
             // delete from IE
-            anim_obj = null;
+            $chain = null;
 
             clearInterval(interval);
 
             // create new instance
-            put_object_to_view(number);
+            putObjectToView(number);
             return;
         }
 
-        anim_obj.style.top = top + 'px';
+        $chain.style.top = top + 'px';
         top += 5;
-    }, +(Math.random() * 70 + 10).toFixed(0));
+    }, time);
 
     animationIntervals.push(interval);
 }
 
 function setup() {
-    var i, max = (config.ZONE_WIDTH / config.ANIMATE_OBJECT_WIDTH).toFixed(0);
+    var i;
+    var max = (config.ZONE_WIDTH / config.ANIMATE_OBJECT_WIDTH).toFixed(0);
 
     for (i = 0; i < max; i++) {
-        put_object_to_view(i);
+        putObjectToView(i);
     }
-    setup_area(area_instance);
+    setupArea($dom);
 }
 
 function clearIntervals() {
@@ -104,24 +105,22 @@ function clearIntervals() {
 
 module.exports = {
     init: function (settings) {
+        MatrixData.setup();
+
         // ustawienie konfiguracji
         config = Utils.mixin(config, settings);
 
         // złapanie kontenera do animacji
-        area_instance = document.querySelector(config.ZONE_ID);
-
-        // dodanie klasy CSS do załadowania wyglądu
-        DOM.addClass('matrix');
+        $dom = document.querySelector(config.ZONE_ID);
 
         // uruchomienie animacji
         setup();
     },
     clear: function () {
-        if (area_instance) {
-            area_instance.innerHTML = '';
+        if ($dom) {
+            $dom.innerHTML = '';
         }
 
         clearIntervals();
-        DOM.removeClass('matrix');
     }
 };

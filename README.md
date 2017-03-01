@@ -1,10 +1,10 @@
-# matrix
+# matrix-project
 
-> Letters animation as Matrix theme.
+> Letters animation in Matrix theme.
 
-## How it works?
+## Demo
 
-Each characters chain is `<div>` tag with character (`<span>`).
+http://matrix-project.surge.sh/
 
 ## License
 

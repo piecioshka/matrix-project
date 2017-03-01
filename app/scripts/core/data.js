@@ -17,11 +17,13 @@ function add_china_elements() {
     }
 }
 
-add_normal_elements();
-add_numbers();
-// add_china_elements();
-
 module.exports = {
+    setup: function () {
+        add_normal_elements();
+        add_numbers();
+        // add_china_elements();
+    },
+
     getElements: function () {
         return elements;
     },
