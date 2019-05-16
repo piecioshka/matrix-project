@@ -1,10 +1,10 @@
 # matrix-project
 
-> Letters animation in Matrix theme.
+:snail: Letters animation in Matrix theme.
 
-## Demo
+## Demo :tada:
 
-http://matrix-project.surge.sh/
+<http://matrix-project.surge.sh/>
 
 ## License
 
