@@ -2,7 +2,7 @@
 
 :snail: Letters animation in Matrix theme.
 
-## Demo :tada:
+## Preview 🎉
 
 <http://matrix-project.surge.sh/>
 
